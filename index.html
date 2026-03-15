@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>AI Study Planner Dashboard</title>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<style>
+
+body{
+font-family: Arial;
+background:#0f172a;
+color:white;
+text-align:center;
+}
+
+.container{
+width:90%;
+margin:auto;
+display:flex;
+flex-wrap:wrap;
+justify-content:center;
+}
+
+.card{
+background:#1e293b;
+padding:20px;
+margin:20px;
+border-radius:10px;
+width:400px;
+box-shadow:0 0 10px black;
+}
+
+table{
+width:100%;
+border-collapse:collapse;
+}
+
+th,td{
+border:1px solid white;
+padding:8px;
+}
+
+th{
+background:#334155;
+}
+
+.high{
+color:#ef4444;
+font-weight:bold;
+}
+
+button{
+padding:10px 20px;
+background:#22c55e;
+border:none;
+color:white;
+font-size:16px;
+margin-top:10px;
+}
+
+</style>
+</head>
+
+<body>
+
+<h1>AI Study Planner for Students</h1>
+
+<div class="container">
+
+<!-- Study Table -->
+<div class="card">
+
+<h3>Study Schedule</h3>
+
+<table id="studyTable">
+
+<thead>
+<tr>
+<th>Subject</th>
+<th>Topic</th>
+<th>Priority</th>
+<th>Hours</th>
+<th>Deadline</th>
+</tr>
+</thead>
+
+<tbody></tbody>
+
+</table>
+
+</div>
+
+
+<!-- Chart Card -->
+<div class="card">
+
+<h3>Study Hours Analysis</h3>
+
+<canvas id="chart"></canvas>
+
+</div>
+
+
+<!-- Alert Card -->
+<div class="card">
+
+<h3>AI Alerts</h3>
+
+<ul id="alerts"></ul>
+
+</div>
+
+</div>
+
+
+<script>
+
+// Sample study data
+const studyData = [
+
+{subject:"Math",topic:"Algebra",priority:"High",hours:2,deadline:"2026-03-20"},
+{subject:"Physics",topic:"Mechanics",priority:"Medium",hours:1.5,deadline:"2026-03-18"},
+{subject:"Chemistry",topic:"Organic",priority:"High",hours:2,deadline:"2026-03-22"},
+{subject:"English",topic:"Essay",priority:"Low",hours:1,deadline:"2026-03-25"},
+{subject:"History",topic:"WW2",priority:"Medium",hours:1.5,deadline:"2026-03-21"}
+
+];
+
+
+// Fill Table
+const tbody=document.querySelector("#studyTable tbody");
+
+studyData.forEach(item=>{
+
+const row=tbody.insertRow();
+
+row.insertCell(0).innerText=item.subject;
+row.insertCell(1).innerText=item.topic;
+row.insertCell(2).innerText=item.priority;
+row.insertCell(3).innerText=item.hours;
+row.insertCell(4).innerText=item.deadline;
+
+if(item.priority==="High"){
+row.classList.add("high");
+}
+
+});
+
+
+// Alerts
+const alertList=document.getElementById("alerts");
+
+studyData.forEach(item=>{
+
+if(item.priority==="High"){
+
+const li=document.createElement("li");
+
+li.innerText="⚠ High Priority: "+item.subject+" - "+item.topic;
+
+alertList.appendChild(li);
+
+}
+
+});
+
+
+// Chart Data
+const subjects=[...new Set(studyData.map(d=>d.subject))];
+
+const hours=subjects.map(s=>
+studyData
+.filter(d=>d.subject===s)
+.reduce((sum,d)=>sum+d.hours,0)
+);
+
+
+// Chart
+const ctx=document.getElementById('chart');
+
+new Chart(ctx,{
+type:'bar',
+data:{
+labels:subjects,
+datasets:[{
+label:'Study Hours',
+data:hours
+}]
+},
+options:{
+scales:{
+y:{beginAtZero:true}
+}
+}
+});
+
+</script>
+
+</body>
+</html>
